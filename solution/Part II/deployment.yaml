@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: csvserver-deployment
+  labels:
+    app: csvserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: csvserver
+  template:
+    metadata:
+      labels:
+        app: csvserver
+    spec:
+      initContainers:
+      - name: init-csv
+        image: busybox
+        command: ["sh", "-c", "echo -e '0,234\n1,98\n2,34\n3,77\n4,85\n5,91\n6,72' > /data/inputdata"]
+        volumeMounts:
+        - name: data-volume
+          mountPath: /data
+      containers:
+      - name: csvserver
+        image: demoserver:1.0
+        #image: as414552/csvserver-assignment:1.0
+        env:
+        - name: CSVSERVER_BORDER
+          value: "Orange"
+        volumeMounts:
+        - name: data-volume
+          mountPath: /csvserver
+        ports:
+        - containerPort: 9300
+      volumes:
+      - name: data-volume
+        emptyDir: {}
