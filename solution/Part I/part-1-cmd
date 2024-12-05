@@ -1,0 +1,1 @@
+docker run -d --name csvserver   -v "$(pwd)/inputdata:/csvserver/inputdata"   -e CSVSERVER_BORDER=Orange   -p 9393:9300   demoserver:1.0
